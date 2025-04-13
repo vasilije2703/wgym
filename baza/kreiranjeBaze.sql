@@ -81,3 +81,19 @@ CREATE TABLE obrok(
     FOREIGN KEY (hrana_id) REFERENCES hrana(id),
     FOREIGN KEY (korisnik_id) REFERENCES korisnik(id)
 );
+
+ALTER TABLE korisnik DROP FOREIGN KEY fk_clan_teretana;
+
+ALTER TABLE korisnik
+ADD CONSTRAINT fk_korisnik_teretana
+FOREIGN KEY (teretana_pib)
+REFERENCES teretana(pib)
+ON DELETE SET NULL;
+
+ALTER TABLE korisnik MODIFY COLUMN teretana_pib INT NULL;
+
+ALTER TABLE teretana
+DROP CHECK teretana_chk_1;
+
+ALTER TABLE teretana
+ADD CONSTRAINT chk_pib_range CHECK (pib BETWEEN 10000000 AND 99999999);
