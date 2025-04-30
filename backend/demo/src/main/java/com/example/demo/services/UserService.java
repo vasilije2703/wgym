@@ -2,16 +2,21 @@ package com.example.demo.services;
 
 import com.example.demo.models.User;
 import com.example.demo.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
-    private UserRepository userRepository;
+    private  UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     //GET ALL
@@ -28,6 +33,10 @@ public class UserService {
 
     //INSERT
     public int insertUser(User user){
+        String password = user.getPassword_hash();
+        String hashed_password = passwordEncoder.encode(password);
+        user.setPassword_hash(hashed_password);
+
         int result = this.userRepository.insertUser(user);
         return result;
     }
@@ -42,5 +51,16 @@ public class UserService {
     public int deleteUser(int id){
         int result = this.userRepository.deleteUser(id);
         return result;
+    }
+
+    //LOGIN
+    public boolean login(String email, String password){
+        Optional<User> userOpt = this.userRepository.findByEmail(email);
+        if(userOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+        return this.passwordEncoder.matches(password, user.getPassword_hash());
     }
 }

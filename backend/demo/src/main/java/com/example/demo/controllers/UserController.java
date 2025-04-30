@@ -1,7 +1,10 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.LogInRequest;
 import com.example.demo.models.User;
 import com.example.demo.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,17 @@ public class UserController {
     public List<User> getAllUsers(){
         List<User> result = this.userService.getAllUsers();
         return result;
+    }
+
+    //LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LogInRequest logInRequest){
+        boolean result = this.userService.login(logInRequest.getEmail(), logInRequest.getPassword());
+        if(result){
+            return ResponseEntity.ok("You logged in successfully!");
+        }else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong email or password!");
+        }
     }
 
     //GET BY ID
@@ -49,4 +63,6 @@ public class UserController {
         int result = this.userService.deleteUser(id);
         return result;
     }
+
+
 }

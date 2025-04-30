@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 
 @Repository
@@ -93,9 +94,7 @@ public class UserRepository {
                         rs.getObject("teretana_pib", Integer.class) // Ispravljeno čitanje Integer
                 );
             } else {
-                // Originalni kod nije imao else blok ovde, samo proveru if(!rs.next()) pre čitanja
-                // Ako želite logiku za nepostojećeg korisnika, dodajte je ovde ili vratite null kako jeste
-                System.out.println("Non existing user with id: " + id); // Primer logovanja
+                System.out.println("Non existing user with id: " + id);
             }
 
 
@@ -293,6 +292,56 @@ public class UserRepository {
         }
         finally {
             try {
+                if(ps != null) ps.close();
+                if(conn != null) conn.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return result;
+    }
+
+    //FIND BY EMAIL --- FOR LOGIN
+    public Optional<User> findByEmail(String email){
+        Connection conn = null;
+        Optional<User> result = Optional.empty();
+        PreparedStatement ps = null;
+        ResultSet rs = null; // Dodato rs ovde da bi bio dostupan u finally
+
+        try{
+            conn = DButil.getConnection();
+            String commandText= "SELECT * FROM korisnik WHERE email = ?";
+            ps = conn.prepareStatement(commandText);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+
+            if(rs.next()){ // Provera pre čitanja
+                result = Optional.of(new User(
+                        rs.getInt("id"),
+                        rs.getString("ime"),
+                        rs.getString("prezime"),
+                        rs.getString("email"),
+                        rs.getString("password_hash"),
+                        rs.getObject("visina", Integer.class),
+                        rs.getBigDecimal("tezina"),
+                        rs.getDate("datum_rodjenja"),
+                        rs.getInt("uloga_id"),
+                        rs.getObject("teretana_pib", Integer.class)
+                ));
+            }
+
+            conn.close();
+            ps.close();
+
+
+        }catch(Exception e){
+            result = null;
+            System.out.println(e);
+        }
+        finally {
+            try {
+                if(rs != null) rs.close();
                 if(ps != null) ps.close();
                 if(conn != null) conn.close();
             } catch (Exception e) {
