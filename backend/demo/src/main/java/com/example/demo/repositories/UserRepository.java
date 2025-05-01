@@ -307,7 +307,7 @@ public class UserRepository {
         Connection conn = null;
         Optional<User> result = Optional.empty();
         PreparedStatement ps = null;
-        ResultSet rs = null; // Dodato rs ovde da bi bio dostupan u finally
+        ResultSet rs = null;
 
         try{
             conn = DButil.getConnection();

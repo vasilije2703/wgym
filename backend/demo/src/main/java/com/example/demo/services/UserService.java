@@ -54,13 +54,15 @@ public class UserService {
     }
 
     //LOGIN
-    public boolean login(String email, String password){
+    public  Optional<User> login(String email, String password){
         Optional<User> userOpt = this.userRepository.findByEmail(email);
-        if(userOpt.isEmpty()) {
-            return false;
+        if(userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (this.passwordEncoder.matches(password, user.getPassword_hash())) {
+                return Optional.of(user);
+            }
         }
 
-        User user = userOpt.get();
-        return this.passwordEncoder.matches(password, user.getPassword_hash());
+        return Optional.empty();
     }
 }

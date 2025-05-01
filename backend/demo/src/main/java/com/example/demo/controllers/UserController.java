@@ -1,21 +1,26 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.LogInRequest;
+import com.example.demo.dto.LogInResponse;
 import com.example.demo.models.User;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private UserService userService;
+    private JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     //GET ALL
@@ -27,10 +32,12 @@ public class UserController {
 
     //LOGIN
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LogInRequest logInRequest){
-        boolean result = this.userService.login(logInRequest.getEmail(), logInRequest.getPassword());
-        if(result){
-            return ResponseEntity.ok("You logged in successfully!");
+    public ResponseEntity<?> login(@RequestBody LogInRequest logInRequest){
+        Optional<User> result = this.userService.login(logInRequest.getEmail(), logInRequest.getPassword());
+        if(result.isPresent()){
+            String token = this.jwtUtil.generateToken(result.get().getEmail());
+            LogInResponse logInResponse = new LogInResponse(token, "You logged in successfully");
+            return ResponseEntity.ok(logInResponse);
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong email or password!");
         }
