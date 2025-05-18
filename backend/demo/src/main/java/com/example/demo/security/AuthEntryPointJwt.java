@@ -6,6 +6,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+
+//Ulazna tacka za autentifikaciju, rukuje neuspjelom autentifikacijom
+
 @Component
 public class AuthEntryPointJwt  implements AuthenticationEntryPoint {
     @Override

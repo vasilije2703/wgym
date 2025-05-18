@@ -35,7 +35,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LogInRequest logInRequest){
         Optional<User> result = this.userService.login(logInRequest.getEmail(), logInRequest.getPassword());
         if(result.isPresent()){
-            String token = this.jwtUtil.generateToken(result.get().getEmail());
+            String token = this.jwtUtil.generateToken(result.get().getEmail(), result.get().getUloga_id());
             LogInResponse logInResponse = new LogInResponse(token, "You logged in successfully");
             return ResponseEntity.ok(logInResponse);
         }else {

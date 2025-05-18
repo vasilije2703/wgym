@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Optional;
 
+
+//Most ka bazi, iz baze izvlaci username i password i podatke o korisniku i prosledjuje ih u AuthToken filter ako je jwt validan
+//kreira userDetailsObjekat ako je validan jwt
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
     @Autowired

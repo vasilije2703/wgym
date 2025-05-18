@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+
+//Generisanje i sve operacije koje se rade sa jwt su u ovoj klasi, kreiranje, provjera tokena
+
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
@@ -14,6 +17,8 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
     private SecretKey key;
+
+    private static final String ULOGA_ID_CLAIM_KEY = "uloga_id";
 
     // Initializes the key after the class is instantiated and the jwtSecret is injected,
     // preventing the repeated creation of the key and enhancing performance
@@ -23,22 +28,18 @@ public class JwtUtil {
     }
 
     // Generate JWT token
-    public String generateToken(String email) {
+    public String generateToken(String email, int ulogaId) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim(ULOGA_ID_CLAIM_KEY, ulogaId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Get username from JWT token
     public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key).build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return getAllClaimsFromToken(token).getSubject();
     }
 
     // Validate JWT token
@@ -58,5 +59,18 @@ public class JwtUtil {
             System.out.println("JWT claims string is empty: " + e.getMessage());
         }
         return false;
+    }
+
+
+    public Integer getUlogaIdFromToken(String token) {
+        return getAllClaimsFromToken(token).get(ULOGA_ID_CLAIM_KEY, Integer.class);
+    }
+
+
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key).build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

@@ -15,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//definisem objekte ovih novih klasa, konstruktorska injekcija, ovde se odredjuje sta se desava sa zahtjevima, odnosno koje rute
+//zahtijevaju autentifikaciju a koje ne
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -23,7 +26,6 @@ public class SecurityConfig {
     private final AuthTokenFilter authTokenFilter;
     private final CustomUserDetailsService userDetailsService; // Potreban za AuthenticationProvider
 
-    // Konstruktorska injekcija (preporučeno)
     public SecurityConfig(AuthEntryPointJwt unauthorizedHandler,
                           AuthTokenFilter authTokenFilter,
                           CustomUserDetailsService userDetailsService) {
