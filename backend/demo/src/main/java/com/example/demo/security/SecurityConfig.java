@@ -73,7 +73,7 @@ public class SecurityConfig {
                         // .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 
                         // Zahtevaj AUTENTIFIKACIJU za SVE OSTALE zahteve
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 // 5. Eksplicitno dodaj AuthenticationProvider (dobra praksa)

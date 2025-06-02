@@ -1,43 +1,30 @@
-package com.example.demo.models;
+package com.example.demo.dto;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 
-public class User {
-    private int id;
-    private String ime;
-    private String prezime;
-    private String email;
-    private String password_hash;
-    private Integer visina; // Promenjeno u Integer
-    private BigDecimal tezina;
-    private Date datum_rodjenja;
-    private int uloga_id; // Pretpostavka: uloga_id ne može biti null
-    private Integer teretana_pib; // Promenjeno u Integer
 
-    public User(int id, String ime, String prezime, String email, String password_hash, Integer visina, BigDecimal tezina, Date datum_rodjenja, int uloga_id, Integer teretana_pib) {
-        this.id = id;
+public class SignUpRequest {
+    public String ime;
+    public String prezime;
+    public String email;
+    public String password;
+    public Integer visina;
+    public BigDecimal tezina;
+    public Date datum_rodjenja;
+    public Integer uloga_id;
+    public Integer teretana_pib;
+
+    public SignUpRequest(String ime, String prezime, String email, String password, Integer visina, BigDecimal tezina, Date datum_rodjenja, Integer uloga_id, Integer teretana_pib) {
         this.ime = ime;
         this.prezime = prezime;
         this.email = email;
-        this.password_hash = password_hash;
+        this.password = password;
         this.visina = visina;
         this.tezina = tezina;
         this.datum_rodjenja = datum_rodjenja;
         this.uloga_id = uloga_id;
         this.teretana_pib = teretana_pib;
-    }
-
-    public User(){
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getIme() {
@@ -64,12 +51,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword_hash() {
-        return password_hash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Integer getVisina() {
@@ -96,11 +83,11 @@ public class User {
         this.datum_rodjenja = datum_rodjenja;
     }
 
-    public int getUloga_id() {
+    public Integer getUloga_id() {
         return uloga_id;
     }
 
-    public void setUloga_id(int uloga_id) {
+    public void setUloga_id(Integer uloga_id) {
         this.uloga_id = uloga_id;
     }
 

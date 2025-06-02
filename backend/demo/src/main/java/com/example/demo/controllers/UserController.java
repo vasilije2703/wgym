@@ -2,9 +2,11 @@ package com.example.demo.controllers;
 
 import com.example.demo.dto.LogInRequest;
 import com.example.demo.dto.LogInResponse;
+import com.example.demo.dto.SignUpRequest;
 import com.example.demo.models.User;
 import com.example.demo.security.JwtUtil;
 import com.example.demo.services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +42,20 @@ public class UserController {
             return ResponseEntity.ok(logInResponse);
         }else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong email or password!");
+        }
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody SignUpRequest request) {
+        try {
+            int result = userService.signUp(request);
+            if (result == 1) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("User signed up successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user due to a server error.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
